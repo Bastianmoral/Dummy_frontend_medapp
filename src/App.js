@@ -32,13 +32,13 @@ function App() {
     cancerGeneDrug: [
       {
         cancer: "Cancer de pulmón",
-        gene: "BRCA1",
+        genes: ["BRCA1"],
         drug: "Drogita A",
         tests: ["test_bc01"],
       },
       {
         cancer: "Cancer de mama",
-        gene: "BRCA2",
+        genes: ["BRCA2"],
         drug: "Drogita B",
         tests: ["test_bc02", "test_gc"],
       },
@@ -59,12 +59,20 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!cancer || genes.length === 0) {
+      alert(
+        "Por favor, selecciona al menos un tipo de cáncer y uno o más genes."
+      );
+      return;
+    }
+
     const filteredData = dummyData.cancerGeneDrug.filter(
       (item) =>
-        item.cancer === cancer &&
-        genes.every((gene) => item.gene.includes(gene)) &&
-        (!drug || item.drug === drug)
+        item.cancer.toLowerCase() === cancer.toLowerCase() &&
+        genes.every((gene) => item.genes.includes(gene)) &&
+        (!drug || item.drug.toLowerCase() === drug.toLowerCase())
     );
+
     const result = {
       filteredData,
       tests: filteredData.flatMap((item) =>
@@ -78,18 +86,31 @@ function App() {
         dummyData.availability.find((avail) => avail.drug === item.drug)
       ),
     };
+
     setResults(result);
   };
 
   return (
-    <Container className='mt-5'>
-      <Card>
+    <Container
+      fluid
+      className='p-5'
+      style={{
+        backgroundColor: "#000",
+        color: "#fff",
+        minHeight: "100vh", // Cambiar Height a minHeight
+        width: "100%", // Cambiar width a 100%
+      }}
+    >
+      <h1>ONCO APP</h1>
+      <Card style={{ backgroundColor: "#333", color: "#fff" }}>
         <Card.Body>
-          <Card.Title className='mb-4'>Cancer Data Search</Card.Title>
+          <Card.Title className='mb-3'>
+            Variables a ingresar dentro de la APP
+          </Card.Title>
           <Form onSubmit={handleSubmit}>
             <Form.Group as={Row} className='mb-3'>
               <Form.Label column sm={2}>
-                Cancer Type:
+                Tipos de cancer:
               </Form.Label>
               <Col sm={10}>
                 <Form.Control
@@ -97,6 +118,7 @@ function App() {
                   value={cancer}
                   onChange={(e) => setCancer(e.target.value)}
                   list='cancer-list'
+                  style={{ backgroundColor: "#444", color: "#fff" }}
                 />
                 <datalist id='cancer-list'>
                   {dummyData.cancers.map((c, index) => (
@@ -115,6 +137,7 @@ function App() {
                   multiple
                   value={genes}
                   onChange={handleGeneChange}
+                  style={{ backgroundColor: "#444", color: "#fff" }}
                 >
                   {dummyData.genes.map((g, index) => (
                     <option key={index} value={g}>
@@ -126,7 +149,7 @@ function App() {
             </Form.Group>
             <Form.Group as={Row} className='mb-3'>
               <Form.Label column sm={2}>
-                Drug (optional):
+                Drogas (Opcional):
               </Form.Label>
               <Col sm={10}>
                 <Form.Control
@@ -134,6 +157,7 @@ function App() {
                   value={drug}
                   onChange={(e) => setDrug(e.target.value)}
                   list='drug-list'
+                  style={{ backgroundColor: "#444", color: "#fff" }}
                 />
                 <datalist id='drug-list'>
                   {dummyData.drugs.map((d, index) => (
@@ -144,7 +168,7 @@ function App() {
             </Form.Group>
             <Form.Group as={Row} className='mb-3'>
               <Form.Label column sm={2}>
-                Test Type:
+                Tipo de test:
               </Form.Label>
               <Col sm={10}>
                 <Form.Check
@@ -154,6 +178,7 @@ function App() {
                   value='Germinal'
                   checked={testType === "Germinal"}
                   onChange={handleTestTypeChange}
+                  style={{ color: "#fff" }}
                 />
                 <Form.Check
                   type='radio'
@@ -162,6 +187,7 @@ function App() {
                   value='Somatica'
                   checked={testType === "Somatica"}
                   onChange={handleTestTypeChange}
+                  style={{ color: "#fff" }}
                 />
                 <Form.Check
                   type='radio'
@@ -170,25 +196,44 @@ function App() {
                   value=''
                   checked={testType === ""}
                   onChange={handleTestTypeChange}
+                  style={{ color: "#fff" }}
                 />
               </Col>
             </Form.Group>
             <Button variant='primary' type='submit'>
-              Search
+              Buscar
             </Button>
           </Form>
         </Card.Body>
       </Card>
-      {results && (
-        <Card className='mt-4'>
+      {results && results.filteredData.length === 0 && (
+        <Card
+          className='mt-4'
+          style={{ backgroundColor: "#ff0000", color: "#fff" }}
+        >
           <Card.Body>
-            <Card.Title>Results:</Card.Title>
+            <Card.Title>Sin resultados</Card.Title>
+            <p>
+              No hay coincidencias para las variables de búsqueda
+              proporcionadas.
+            </p>
+          </Card.Body>
+        </Card>
+      )}
+      {results && results.filteredData.length > 0 && (
+        <Card
+          className='mt-4'
+          style={{ backgroundColor: "#333", color: "#fff" }}
+        >
+          <Card.Body>
+            <Card.Title>Resultados:</Card.Title>
             <div>
-              <h5>Cancer and Gene Matches:</h5>
+              <h5>Relación entre variables (Gen y cancer):</h5>
               <ul>
                 {results.filteredData.map((item, index) => (
                   <li key={index}>
-                    Cancer: {item.cancer}, Gene: {item.gene}, Drug: {item.drug}
+                    Cancer: {item.cancer}, Gen: {item.genes.join(", ")}, Droga:{" "}
+                    {item.drug}
                   </li>
                 ))}
               </ul>
@@ -198,19 +243,19 @@ function App() {
               <ul>
                 {results.tests.map((test, index) => (
                   <li key={index}>
-                    Test Code: {test.code}, Genes: {test.genes.join(", ")},
-                    Type: {test.Zygocity}
+                    Código del tes: {test.code}, Genes: {test.genes.join(", ")},
+                    Tipo: {test.Zygocity}
                   </li>
                 ))}
               </ul>
             </div>
             <div>
-              <h5>Drug Availability:</h5>
+              <h5>Disponibilidad de la droga en el ISP:</h5>
               <ul>
                 {results.availability.map((avail, index) => (
                   <li key={index}>
-                    Drug: {avail.drug}, Available:{" "}
-                    {avail.available ? "Yes" : "No"}
+                    Droga: {avail.drug}, Disponible en Chile:{" "}
+                    {avail.available ? "Sí" : "No"}
                   </li>
                 ))}
               </ul>
