@@ -26,10 +26,10 @@ const UserView = ({ handleLogout }) => {
           process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api";
 
         const cancerRes = await axios.get(
-          `${API_BASE_URL}api/cancer-details/valid-cancers`
+          `${API_BASE_URL}cancer-details/valid-cancers`
         );
         const geneRes = await axios.get(
-          `${API_BASE_URL}api/ngs-test-results/genes`
+          `${API_BASE_URL}ngs-test-results/genes`
         );
 
         setValidCancers(
