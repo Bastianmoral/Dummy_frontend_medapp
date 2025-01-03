@@ -1,5 +1,93 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import AdminView from "./components/AdminView";
+import SellerView from "./components/SellerView";
+import UserView from "./components/UserView";
+import Login from "./components/Login";
+import { AuthContext } from "./context/AuthContext";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { Container } from "react-bootstrap";
+
+function App() {
+  const { role, logout } = useContext(AuthContext);
+  /*   const [cancer, setCancer] = useState("");
+  const [genes, setGenes] = useState([]);
+  const [drug, setDrug] = useState("");
+  const [results, setResults] = useState(null);
+  const [testType, setTestType] = useState("");
+ */
+  /*   const dummyData = {
+    cancers: ["Cancer de pulmón", "Cancer de mama"],
+    genes: ["APC", "BRCA1", "BRCA2", "CDH1", "CHEK2", "FANCC", "P53", "RCA2"],
+    drugs: ["Droga A", "Droga B", "Droga C"],
+    tests: [
+      { code: "test_bc01", genes: ["P53"], Zygocity: "Somatica" },
+      { code: "test_bc02", genes: ["BRCA1"], Zygocity: "Germinal" },
+    ],
+    availability: [{ drug: "Droga A", available: true }],
+    cancerGeneDrug: [
+      { cancer: "Cancer de pulmón", genes: ["BRCA1"], drug: "Droga A" },
+      { cancer: "Cancer de mama", genes: ["BRCA2"], drug: "Droga B" },
+    ],
+  };
+ */
+  return (
+    <Router>
+      <Container
+        fluid
+        className='p-5'
+        style={{ backgroundColor: "#000", color: "#fff", minHeight: "100vh" }}
+      >
+        <Routes>
+          <Route
+            path='/'
+            element={!role ? <Login /> : <Navigate to={`/${role}`} />}
+          />
+          <Route
+            path='/admin'
+            element={
+              role === "admin" ? (
+                <AdminView handleLogout={logout} />
+              ) : (
+                <Navigate to='/' />
+              )
+            }
+          />
+          <Route
+            path='/seller'
+            element={
+              role === "seller" ? (
+                <SellerView handleLogout={logout} />
+              ) : (
+                <Navigate to='/' />
+              )
+            }
+          />
+          <Route
+            path='/user'
+            element={
+              role === "user" ? (
+                <UserView handleLogout={logout} />
+              ) : (
+                <Navigate to='/' />
+              )
+            }
+          />
+        </Routes>
+      </Container>
+    </Router>
+  );
+}
+
+export default App;
+
+/* import React, { useState } from "react";
 import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
+import CancerDetails from "./components/CancerDetails";
 
 function App() {
   const [cancer, setCancer] = useState("");
@@ -10,8 +98,8 @@ function App() {
 
   const dummyData = {
     cancers: ["Cancer de pulmón", "Cancer de mama"],
-    genes: ["P53", "BRCA1", "BRCA2", "RCA2", "CDH1", "CHEK2", "FANCC", "APC"],
-    drugs: ["Drogita A", "Drogita B", "Drogita C"],
+    genes: ["APC", "BRCA1", "BRCA2", "CDH1", "CHEK2", "FANCC", "P53", "RCA2"],
+    drugs: ["Droga A", "Droga B", "Droga C"],
     tests: [
       {
         code: "test_bc01",
@@ -26,20 +114,20 @@ function App() {
       },
     ],
     availability: [
-      { drug: "Drogita A", available: true },
-      { drug: "Drogita B", available: false },
+      { drug: "Droga A", available: true },
+      { drug: "Droga B", available: false },
     ],
     cancerGeneDrug: [
       {
         cancer: "Cancer de pulmón",
         genes: ["BRCA1"],
-        drug: "Drogita A",
+        drug: "Droga A",
         tests: ["test_bc01"],
       },
       {
         cancer: "Cancer de mama",
         genes: ["BRCA2"],
-        drug: "Drogita B",
+        drug: "Droga B",
         tests: ["test_bc02", "test_gc"],
       },
     ],
@@ -182,7 +270,7 @@ function App() {
                 />
                 <Form.Check
                   type='radio'
-                  label='Somatica'
+                  label='Somatico'
                   name='testType'
                   value='Somatica'
                   checked={testType === "Somatica"}
@@ -191,7 +279,7 @@ function App() {
                 />
                 <Form.Check
                   type='radio'
-                  label='All'
+                  label='Ambos'
                   name='testType'
                   value=''
                   checked={testType === ""}
@@ -207,18 +295,21 @@ function App() {
         </Card.Body>
       </Card>
       {results && results.filteredData.length === 0 && (
-        <Card
-          className='mt-4'
-          style={{ backgroundColor: "#ff0000", color: "#fff" }}
-        >
-          <Card.Body>
-            <Card.Title>Sin resultados</Card.Title>
-            <p>
-              No hay coincidencias para las variables de búsqueda
-              proporcionadas.
-            </p>
-          </Card.Body>
-        </Card>
+        <>
+          <Card
+            className='mt-4'
+            style={{ backgroundColor: "#ff0000", color: "#fff" }}
+          >
+            <Card.Body>
+              <Card.Title>Sin resultados</Card.Title>
+              <p>
+                No hay coincidencias para las variables de búsqueda
+                proporcionadas.
+              </p>
+            </Card.Body>
+          </Card>
+          <CancerDetails />
+        </>
       )}
       {results && results.filteredData.length > 0 && (
         <Card
@@ -267,4 +358,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;  */
