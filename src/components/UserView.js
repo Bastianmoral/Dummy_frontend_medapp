@@ -22,12 +22,16 @@ const UserView = ({ handleLogout }) => {
   useEffect(() => {
     const fetchValidData = async () => {
       try {
+        const API_BASE_URL =
+          process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api";
+
         const cancerRes = await axios.get(
-          "http://localhost:5000/api/cancer-details/valid-cancers"
+          `${API_BASE_URL}/cancer-details/valid-cancers`
         );
         const geneRes = await axios.get(
-          "http://localhost:5000/api/ngs-test-results/genes"
+          `${API_BASE_URL}/ngs-test-results/genes`
         );
+
         setValidCancers(
           cancerRes.data.map((item) => ({ value: item, label: item }))
         );
@@ -89,8 +93,11 @@ const UserView = ({ handleLogout }) => {
     setError("");
 
     try {
+      const API_BASE_URL =
+        process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api";
+
       const response = await axios.post(
-        "http://localhost:5000/api/ngs-test-results/search",
+        `${API_BASE_URL}/ngs-test-results/search`,
         {
           cancer: selectedCancer.value,
           gene: selectedGene.value,
