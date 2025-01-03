@@ -97,7 +97,7 @@ const UserView = ({ handleLogout }) => {
         process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api";
 
       const response = await axios.post(
-        `${API_BASE_URL}/ngs-test-results/search`,
+        `${API_BASE_URL}ngs-test-results/search`,
         {
           cancer: selectedCancer.value,
           gene: selectedGene.value,
